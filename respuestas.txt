@@ -1,0 +1,103 @@
+PRACTICA 2 - SM  @AUTHOR : PABLO LONGUEIRA FAILDE email : pablo.longueira.failde@udc.es
+1.1¿Al hacer esta transformación de color, se produce alguna pérdida de información? ¿O por el contrario se genera nueva información al pasar de 1 a 3 imágenes?
+
+    En este caso, al pasar de 1 imagen (RGB) a 3 imágenes (Y, Cb, Cr), no se está generando nueva información, sino que se está representando la información original en un espacio de color diferente. La transformación se realiza de manera determinista y no se introduce información adicional o se pierde información esencial en el proceso
+
+2.1 Si usamos el modo de subsampling *4:4:4*,¿Estaremos perdiendo algo de información? ¿Qué porcentaje de la imagen original?
+
+    En el modo de subsampling 4:4:4, no se realiza downsampling en las componentes de crominancia, lo que significa que se conserva toda la información original en ambas dimensiones (horizontal y vertical) para las crominancias. Por lo tanto, no se pierde información en términos de resolución espacial. El porcentaje de la imagen original que conservamos es el 100%
+
+2.2 Si usamos el modo de subsampling *4:2:0*,¿Estaremos perdiendo algo de información? ¿Qué porcentaje de la imagen original?
+
+    En el modo de subsampling 4:2:0, se realiza downsampling reduciendo a la mitad tanto la resolución horizontal como la vertical de las componentes de crominancia en comparación con la resolución de la luminancia. Esto implica que se pierde información en las dimensiones horizontal y vertical de las crominancias. En términos de píxeles totales, estamos conservando el 50% de la resolución original para ambas dimensiones. Por lo tanto, el porcentaje de la imagen original que conservamos es el 25% (considerando la resolución total de la imagen original).
+
+3.1 ¿Qué puedes decir acerca de las dos imágenes obtenidas tras el submuestreo? ¿A qué es debido?
+    
+    Después de realizar el submuestreo 4:2:0 de las crominancias, se observa una ligera pérdida de detalles en las áreas de color en comparación con la original. Esto se debe a que hemos reducido a la mitad tanto la resolución horizontal como la vertical de las crominancias. Sin embargo, esta pérdida de detalle es generalmente imperceptible para el ojo humano, especialmente en imágenes de alta resolución.
+    En el caso de la recomposición con la componente Y submuestreada, es probable que observes una pérdida significativa de detalles en toda la imagen. Esto se debe a que hemos reducido a la mitad la resolución de la componente de luminancia, lo que afecta directamente a la nitidez y los detalles generales de la imagen. La pérdida de información en la luminancia es más perceptible en comparación con el submuestreo de las crominancias
+
+5.1 ¿Observas alguna diferencia entre los valores del bloque original y los valores recuperados mediante la IDCT? ¿Qué significa eso con respecto a la DCT?
+
+    La única diferencia apreciable es que en la matriz de la imagen recuperada con la IDCT son los mismos valores que la original pero con el formato decimal (tienen un . despues de cada digito)
+    Están normalizados igual que la original  al rango [0, 255] , comparativamente la DCT lo hace en el el rango [-127,128].
+
+6.1 Anota los valores de salida. A la vista de ellos, ¿Con qué nivel de cuantización se consiguen un mayor número de valores en la matriz K? ¿A qué es debido?
+    Valores no nulos en la DCT original: 64
+    Valores no nulos en la DCT cuantizada escala 1: 21
+    Valores no nulos en la DCT cuantizada escala 0.25: 37
+    Valores no nulos en la DCT cuantizada escala 4: 7
+
+    A medida que aumentamos el factor de cuantización , aumentan los valores nulos ya que la división de la matriz con DCT (S) y la de los coficientes (K) será por un número mayor, posteriormente deberíamos redondear al entero más cercano,  si el resultado de la división es pequeño ,redondea a cero.
+
+6.2 ¿Por qué se vuelven nulos algunos valores de las matrices cuantizadas pero no otros?
+
+    La cuantificación implica dividir los valores de la DCT por los valores de la matriz de cuantización y redondear al entero más cercano. Si el resultado de la división es pequeño y redondea a cero, esos coeficientes se vuelven nulos en la matriz cuantizada. Por otro lado, si el resultado de la división es mayor, esos coeficientes no se redondearán a cero y se conservarán en la matriz cuantizada.
+    En otras palabras, la cuantificación introduce pérdida de información al reducir la precisión de los coeficientes DCT, y la probabilidad de que un coeficiente se vuelva nulo aumenta con un factor de cuantificación más alto. Esto es parte del proceso de compresión y es una forma de eliminar información redundante y reducir la cantidad de bits necesarios para representar la imagen.
+
+7.1 ¿Los valores recuperados diferentes de cero, tienen el mismo valor que en la *DCT* original? ¿Por qué?
+
+    Los valores recuperados deberían ser similares a los valores originales de la DCT, excepto por las pequeñas diferencias introducidas por el redondeo durante la cuantificación. La operación de des-cuantificación consiste simplemente en multiplicar los valores cuantificados por el factor de cuantificación original. Sin embargo, debido a la pérdida de precisión durante el redondeo en la cuantificación, es posible que haya pequeñas discrepancias, especialmente en los coeficientes más pequeños.
+    En resumen, la des-cuantificación debería devolver valores cercanos a los originales, pero no idénticos debido a las limitaciones de la cuantificación y la aritmética de punto flotante.
+
+8.1 A la vista de las dos imágenes, ¿Ves alguna similitudes entre ambas? ¿A qué es debido?
+
+    La imagen original y la imagen con los valores de la DCT muestran similitudes en términos de patrones y estructuras. Las regiones más brillantes en la imagen de los valores DCT representan áreas de la imagen original con componentes de frecuencia más altas. La DCT es eficaz para representar la información de la imagen en términos de frecuencias, y las regiones más prominentes en la imagen DCT suelen corresponder a características visuales en la imagen original.
+    La similitud se debe a que la DCT captura la distribución de frecuencias en la imagen y representa la información en términos de coeficientes de frecuencia. Las zonas de alta frecuencia en la imagen original se manifiestan como bloques brillantes en la imagen de los valores DCT.
+
+9.1 Comparando esta imagen con la del pájaro, ¿Qué diferencias observas en cuanto al número de coeficientes de la DCT no nulos? ¿Qué nos dice eso con respecto a la naturaleza (predominio de frecuencias altas o bajas) de cada imagen?
+    La imagen en este caso tiene más zonas de alta frecuencia ya que se muestra con cambios notables y no tan suavizada como la del pájaro.Asímismo podemos ver mas coeficientes no nulos en esta imagen que en la del pájaro, confirmando lo afirmado anteriormente acerca de las frecuencias de esta.
+
+10.1 ¿Se parecen las versiones cuantizadas entre sí? ¿Cuál es la diferencia entre ellas? ¿A qué es debido?
+    Las versiones cuantizadas pueden mostrar similitudes en términos de patrones visuales, pero la diferencia principal radica en el nivel de detalle conservado. La versión cuantizada con un factor de escala de 1 preserva menos detalles en comparación con las versiones cuantizadas con factores de escala más bajos (0.25) pero mejor que factores más altos (4).
+    La diferencia radica en la cantidad de valores no nulos de la matriz afectados por el factor de cuantización, aumentando el factor de cuantizacion reducimod los no nulos.  
+    En los valores de la DCT de Y podemos observar bastante bien la silueta completa e identificar a pájaro posado en la rama, cuya silueta pierde precisión y por lo tanto gana valores nulos una vez usamos factores de cuantización mayores.
+
+11.1: Viendo la imagen en la que solo queda el coeficiente de DC tras la cuantificación, ¿Qué es lo que observas? ¿A qué es debido?
+    Observando la imagen en la que solo queda el coeficiente de DC tras la cuantificación, se nota que la imagen está muy desenfocada y apenas se pueden distinguir detalles. Esto se debe a que el coeficiente DC representa la intensidad media de todos los píxeles del bloque. Al conservar solo el coeficiente DC, se pierde información sobre las variaciones detalladas en la imagen, lo que resulta en una imagen desenfocada.
+
+11.2: Observando las otras dos gráficas, ¿por qué se parece más al original la imagen con solo 3 coeficientes que la que usa 61? ¿Qué es lo que se estaría viendo realmente en esta última con respecto a las diferentes frecuencias que componen la imagen?
+    Observando las otras dos gráficas, la imagen con solo 3 coeficientes parece más similar al original que la que usa 61 coeficientes. Esto se debe a que, al conservar solo 3 coeficientes, se retienen las frecuencias más bajas y esenciales para la estructura general de la imagen.
+    Al conservar 61 coeficientes, se están eliminando algunas de las frecuencias bajas, lo que puede afectar a la representación de la imagen y causar discrepancias con respecto al original. En otras palabras, al seleccionar solo 3 coeficientes, se retiene información crucial para la imagen, mientras que al conservar 61, se eliminan algunas de las frecuencias más bajas y se pierde información importante para la reconstrucción precisa de la imagen.
+
+12.1: ¿Cual es la versión con mayor calidad?¿A qué se debe?
+    pSNR(Y), escalado 1:    	 33.37 dB
+    pSNR(Y), escalado 0.25: 	 40.77 dB
+    pSNR(Y), escalado 4:    	 29.24 dB
+
+    En base a los resultados previstos y a las afirmaciones previas del enunciado podemos asumir que la versión con mejor calidad es la de escalado 0.25, calificándola de muy buena, evidentemente es la que preserva mejor la calidad de la imagen original teniendo menos valores nulos en su matriz. Por ello obtenemos un menor error o desviación entre los pixeles de la original y la comprimida.  
+
+13.1: ¿Qué versión consigue el menor tamaño? ¿A qué se debe esto?
+    Tamaño de la imagen original (Y): 43.17 Kb
+    Tamaño de la imagen codificada (Y): 13.79 Kb
+    Tamaño de la imagen codificada (Y) escala 0.25: 23.25 Kb
+    Tamaño de la imagen codificada (Y) escala 4: 9.55 Kb
+
+    Como podemos observar la de factor 4 de cuantización resulta en menor tamaño, al tener un factor elevado, la pérdida de información es mayor y la reducción de tamaño es significativa
+    Podemos observar que a mayor factor, menor tamañao final de la imagen.
+
+
+
+14.1: Haz una tabla en el fichero de respuestas, y apunta para cada factor de escalado y modo de subsampling cual es el factor de compresión obtenido y el valor de pSNR(Y).   
+    | Factor de Escalado | Modo de Subsampling | Factor de Compresión | pSNR(Y)   |
+    | ------------------ | ------------------- | -------------------- | --------- |
+    | 1                  | 4:4:4               | 4.53                 | 35.49 dB  |
+    | 1                  | 4:2:0               | 8.07                 | 34.70 dB  |
+    | 1                  | 4:1:1               | 8.18                 | 34.38 dB  |
+    | 0.25               | 4:4:4               | 2.94                 | 38.84 dB  |
+    | 0.25               | 4:2:0               | 4.77                 | 36.32 dB  |
+    | 0.25               | 4:1:1               | 4.86                 | 36.09 dB  |
+    | 4                  | 4:4:4               | 6.11                 | 32.63 dB  |
+    | 4                  | 4:2:0               | 11.56                | 32.29 dB  |
+    | 4                  | 4:1:1               | 11.62                | 32.08dB   |
+       
+
+14.2: A la vista de los resultados obtenidos, ¿Qué combinación consigue el mayor factor de compresión? ¿Y el menor? ¿Por qué crees que es así?
+    Mayor Factor de Compresión: La combinación que logra el mayor factor de compresión es con un factor de escala de 4 y subsampling "4:2:0". Esto se debe a que un factor de escala mayor reduce la cantidad de información en las componentes DCT, y el subsampling "4:2:0" reduce la resolución de las componentes de crominancia, disminuyendo aún más el tamaño de los datos comprimidos.
+    Menor Factor de Compresión: La combinación con el menor factor de compresión es con un factor de escala de 0.25 y subsampling "4:4:4". Aquí, el factor de escala más bajo conserva más información en las componentes DCT, y el subsampling "4:4:4" no reduce la resolución de las componentes de crominancia, lo que resulta en una mayor cantidad de datos.
+
+
+14.3 De la misma forma, detalla en que combinación de parámetros se obtiene el mejor y el peor valor de pSNR(y), y cuales crees que son los motivos de ello.
+
+        Mejor Valor de pSNR(Y): La combinación que obtiene el mejor valor de pSNR(Y) es con un factor de escala de 0.25 y subsampling "4:4:4". Aquí, el menor factor de escala conserva más detalles en las componentes DCT, y el subsampling "4:4:4" no reduce la resolución de las componentes de crominancia, lo que resulta en una mayor fidelidad en la reconstrucción.
+
+    Peor Valor de pSNR(Y): La combinación con el peor valor de pSNR(Y) es con un factor de escala de 4 y subsampling "4:2:0". Un factor de escala alto y el subsampling "4:2:0" reducen significativamente la cantidad de información, lo que resulta en una reconstrucción de menor calidad y, por lo tanto, en un menor valor de pSNR(Y).
